@@ -1,4 +1,4 @@
-# Macro
+# <img height="50" alt="nitrate-macro" src="https://github.com/nifty-oss/nitrate/assets/729235/6aebfe33-a52c-417d-9ec3-8fc702f03322"/>
 
 Companion macro for programs using [`nitrate`](https://github.com/nifty-oss/nitrate) entrypoint. It creates structs to provide an easy way to access instruction accounts, while being more efficient than using `solana_program::account_info::next_account_info` iterator.
 
