@@ -10,7 +10,7 @@ The macro is part of [`nitrate`](https://github.com/nifty-oss/nitrate) crate:
 cargo add nitrate
 ```
 
-> **Note:**
+> [!IMPORTANT]
 > You need to use the custom `entrypoint!` defined on the crate in order to use the `Accounts` derive macro.
 
 ## Example
