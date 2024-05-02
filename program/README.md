@@ -1,4 +1,4 @@
-# Program
+# <img height="50" alt="nitrate-program" src="https://github.com/nifty-oss/nitrate/assets/729235/2f7ba5dd-8419-420b-84a3-71408cd00fb5"/>
 
 Types and helper functions for programs using [`nitrate`](https://github.com/nifty-oss/nitrate) entrypoint.
 
@@ -19,7 +19,7 @@ cargo add nitrate
 
 ## License
 
-Copyright (c) 2024 nifty-oss maintainers
+Copyright (c) 2024 nifty-oss maintainers  
 Copyright (c) 2024 Magnetar Fields
 
 Licensed under the Apache License, Version 2.0 (the "License");
