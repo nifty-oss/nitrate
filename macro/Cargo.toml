@@ -1,10 +1,12 @@
 [package]
 name = "nitrate-macro"
 description = "Macro for Nitrate entrypoint programs"
+authors = ["nifty-oss maintainers <maintainers@nifty-oss.org>"]
 repository = "https://github.com/nifty-oss/nitrate"
 version = "0.0.0"
 edition = "2021"
 license = "Apache-2.0"
+readme = "README.md"
 
 [lib]
 proc-macro = true
