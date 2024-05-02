@@ -13,4 +13,4 @@ logging = ["nitrate-program/logging"]
 
 [dependencies]
 nitrate-macro = { version= "0.1.0", path="../macro" }
-nitrate-program = { version="0.0.0", path="../program" }
+nitrate-program = { version= "0.1.0", path="../program" }
