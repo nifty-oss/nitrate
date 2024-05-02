@@ -3,8 +3,8 @@
 Types and helper functions for programs using [`nitrate`](https://github.com/nifty-oss/nitrate) entrypoint.
 
 * `account_info`: Account representation.
-* `cpi`: Helper types to create cross-program invocation using `sol_invoke_signed_c`.
-* `system`: Helper function to CPI into `solana_program::system_program`.
+* `cpi`: Helper types to create cross-program invocations using `sol_invoke_signed_c`.
+* `system`: Helper functions to invoke `solana_program::system_program`.
 
 ## Getting started
 
@@ -14,7 +14,7 @@ The types are used as part of the [`nitrate`](https://github.com/nifty-oss/nitra
 cargo add nitrate
 ```
 
-> **Note:**
+> [!IMPORTANT]
 > You need to use the custom `entrypoint!` defined on the crate in order to use the types included in this crate.
 
 ## License
