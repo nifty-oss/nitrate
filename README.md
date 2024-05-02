@@ -1,9 +1,10 @@
 <h1 align="center">
-  Nitrate
+  <code>nitrate</code>
 </h1>
 <p align="center">
-  <img width="400" alt="Nitrate" src="https://github.com/nifty-oss/stevia/assets/729235/3406121f-b224-484a-899c-210766ad7e58" />
+  <img width="400" alt="Nitrate" src="https://github.com/nifty-oss/nitrate/assets/729235/98c2f3cb-054b-4bbc-9c85-c89db0a7e74a" />
 </p>
+
 <p align="center">
   A custom lightweight entrypoint for Solana programs.
 </p>
@@ -50,8 +51,8 @@ The main difference from the standard `entrypoint!` macro is that `nitrate` repr
 
 The entrypoint is bundled with a companion [`program`](https://github.com/nifty-oss/nitrate/program/README.md) types and [`macro`](https://github.com/nifty-oss/nitrate/macro/README.md) crates.
 
-> **Note:**
-> A program can receive more than the specified maximum number of accounts, but any account exceeding the maximum will be ignored.
+> [!TIP]
+> A program can receive more than the specified maximum number of accounts, but any account exceeding the maximum will be ignored. On an ideal scenario, this number should be equal to the number of accounts required by the largest instruction of your program.
 
 ## License
 
