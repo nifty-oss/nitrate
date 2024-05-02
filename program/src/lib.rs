@@ -53,15 +53,15 @@ pub unsafe fn deserialize<'a, const MAX_ACCOUNTS: usize>(
     offset += std::mem::size_of::<u64>();
 
     for i in 0..count {
-        let dulplicate_info = *(input.add(offset) as *const u8);
-        if dulplicate_info == NON_DUP_MARKER {
+        let duplicate_info = *(input.add(offset) as *const u8);
+        if duplicate_info == NON_DUP_MARKER {
             // MAGNETAR FIELDS: safety depends on alignment, size
             // 1) we will always be 8 byte aligned due to align_offset
             // 2) solana vm serialization format is consistent so size is ok
             let account_info: *mut Account = input.add(offset) as *mut _;
 
             offset += std::mem::size_of::<Account>();
-            offset += (*account_info).data_len;
+            offset += (*account_info).data_len as usize;
             offset += MAX_PERMITTED_DATA_INCREASE;
             offset += (offset as *const u8).align_offset(BPF_ALIGN_OF_U128);
             offset += std::mem::size_of::<u64>(); // MAGNETAR FIELDS: ignore rent epoch
@@ -79,7 +79,7 @@ pub unsafe fn deserialize<'a, const MAX_ACCOUNTS: usize>(
             offset += 8;
             // duplicate account, clone the original
             std::ptr::copy_nonoverlapping(
-                accounts.add(dulplicate_info as usize),
+                accounts.add(duplicate_info as usize),
                 accounts.add(i),
                 1,
             );
@@ -90,12 +90,12 @@ pub unsafe fn deserialize<'a, const MAX_ACCOUNTS: usize>(
     // data (there is a duplication of logic but we avoid testing whether we
     // have space for the account or not)
     for _ in count..total_accounts {
-        let dulplicate_info = *(input.add(offset) as *const u8);
+        let duplicate_info = *(input.add(offset) as *const u8);
 
-        if dulplicate_info == NON_DUP_MARKER {
+        if duplicate_info == NON_DUP_MARKER {
             let account_info: *mut Account = input.add(offset) as *mut _;
             offset += std::mem::size_of::<Account>();
-            offset += (*account_info).data_len;
+            offset += (*account_info).data_len as usize;
             offset += MAX_PERMITTED_DATA_INCREASE;
             offset += (offset as *const u8).align_offset(BPF_ALIGN_OF_U128);
             offset += std::mem::size_of::<u64>(); // MAGNETAR FIELDS: ignore rent epoch

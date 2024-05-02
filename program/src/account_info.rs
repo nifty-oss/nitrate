@@ -53,7 +53,14 @@ pub(crate) struct Account {
 
     /// Account's original data length when it was serialized for the
     /// current program invocation.
-    original_data_len: u32,
+    ///
+    /// The value of this field is lazily initialized to the current data length.
+    /// On first access, the original data length will be 0. The caller should
+    /// ensure that the original data length is set to the current data length for
+    /// subsequence access.
+    ///
+    /// The value of this field is currently only used for `realloc`.
+    original_data_len: [u8; 4],
 
     /// Public key of the account
     key: Pubkey,
@@ -65,7 +72,24 @@ pub(crate) struct Account {
     lamports: u64,
 
     /// Length of the data.
-    pub(crate) data_len: usize,
+    pub(crate) data_len: u64,
+}
+
+// Convenience macro to get the original data length from the account – the value will
+// be zero on first access.
+macro_rules! get_original_data_len {
+    ( $self:expr ) => {
+        unsafe { *(&(*$self).original_data_len as *const _ as *const u32) as usize }
+    };
+}
+
+// Convenience macro to set the original data length in the account.
+macro_rules! set_original_data_len {
+    ( $self:expr, $len:expr ) => {
+        unsafe {
+            *(&mut (*$self).original_data_len) = u32::to_le_bytes($len as u32);
+        }
+    };
 }
 
 /// Wrapper struct for an `Account`.
@@ -118,18 +142,7 @@ impl AccountInfo {
     /// Returns the size of the data in the account.
     #[inline(always)]
     pub fn data_len(&self) -> usize {
-        unsafe { (*self.raw).data_len }
-    }
-
-    /// Returns account's original data length.
-    ///
-    /// # Safety
-    ///
-    /// This method assumes that the original data length was serialized as a u32
-    /// integer in the 4 bytes immediately preceding the serialized account key.
-    #[inline(always)]
-    unsafe fn original_data_len(&self) -> usize {
-        (*self.raw).original_data_len as usize
+        unsafe { (*self.raw).data_len as usize }
     }
 
     /// Indicates whether the account data is empty.
@@ -179,7 +192,7 @@ impl AccountInfo {
     /// This does not check or modify the 4-bit refcell. Useful when instruction
     /// has verified non-duplicate accounts.
     pub unsafe fn unchecked_borrow_data(&self) -> &[u8] {
-        core::slice::from_raw_parts(self.data_ptr(), (*self.raw).data_len)
+        core::slice::from_raw_parts(self.data_ptr(), self.data_len())
     }
 
     /// Returns a mutable reference to the data in the account.
@@ -190,7 +203,7 @@ impl AccountInfo {
     /// has verified non-duplicate accounts.
     #[allow(clippy::mut_from_ref)]
     pub unsafe fn unchecked_borrow_mut_data(&self) -> &mut [u8] {
-        core::slice::from_raw_parts_mut(self.data_ptr(), (*self.raw).data_len)
+        core::slice::from_raw_parts_mut(self.data_ptr(), self.data_len())
     }
 
     /// Tries to get a read-only reference to the lamport field, failing if the
@@ -261,7 +274,7 @@ impl AccountInfo {
 
         // return the reference to data
         Ok(Ref {
-            value: unsafe { core::slice::from_raw_parts(self.data_ptr(), (*self.raw).data_len) },
+            value: unsafe { core::slice::from_raw_parts(self.data_ptr(), self.data_len()) },
             state: unsafe { NonNull::new_unchecked(&mut (*self.raw).borrow_state) },
             borrow_shift: DATA_SHIFT,
         })
@@ -282,7 +295,7 @@ impl AccountInfo {
 
         // return the mutable reference to data
         Ok(RefMut {
-            value: unsafe { from_raw_parts_mut(self.data_ptr(), (*self.raw).data_len) },
+            value: unsafe { from_raw_parts_mut(self.data_ptr(), self.data_len()) },
             state: unsafe { NonNull::new_unchecked(&mut (*self.raw).borrow_state) },
             borrow_mask: DATA_MASK,
         })
@@ -315,7 +328,14 @@ impl AccountInfo {
             return Ok(());
         }
 
-        let original_len = unsafe { self.original_data_len() };
+        let original_len = match get_original_data_len!(self.raw) {
+            len if len > 0 => len,
+            _ => {
+                set_original_data_len!(self.raw, current_len);
+                current_len
+            }
+        };
+
         // return early if the length increase from the original serialized data
         // length is too large and would result in an out of bounds allocation
         if new_len.saturating_sub(original_len) > MAX_PERMITTED_DATA_INCREASE {
