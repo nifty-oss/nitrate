@@ -47,7 +47,7 @@ pub fn process_instruction(
 }
 ```
 
-The main difference from the standard `entrypoint!` macro is that `nitrate` represents an entrypoint that does not perform allocattions or copies when reading the input buffer, and therefore uses less compute units to parse the input accounts.
+The main difference from the standard `entrypoint!` macro is that `nitrate` represents an entrypoint that does not perform allocations or copies when reading the input buffer, and therefore uses less compute units to parse the input accounts.
 
 The entrypoint is bundled with a companion [`program`](https://github.com/nifty-oss/nitrate/program/README.md) types and [`macro`](https://github.com/nifty-oss/nitrate/macro/README.md) crates.
 
@@ -70,4 +70,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-This crate is based on [`solana-nostd-entrypoint`](https://github.com/cavemanloverboy/solana-nostd-entrypoint/tree/main) under the [Apache-2.0 license](./LICENSE.third-party).
+This crate is based on [`solana-nostd-entrypoint`](https://github.com/cavemanloverboy/solana-nostd-entrypoint) under the [Apache-2.0 license](./LICENSE.third-party).
