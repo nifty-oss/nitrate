@@ -49,7 +49,7 @@ pub fn process_instruction(
 
 The main difference from the standard `entrypoint!` macro is that `nitrate` represents an entrypoint that does not perform allocations or copies when reading the input buffer, and therefore uses less compute units to parse the input accounts.
 
-The entrypoint is bundled with a companion [`macro`](https://github.com/nifty-oss/nitrate/macro/README.md) and [`program`](https://github.com/nifty-oss/nitrate/program/README.md) types crates.
+The entrypoint is bundled with a companion [`macro`](https://github.com/nifty-oss/nitrate/tree/main/macro) and [`program`](https://github.com/nifty-oss/nitrate/tree/main/program) types crates.
 
 > [!IMPORTANT]
 > A program can receive more than the specified maximum number of accounts, but any account exceeding the maximum will be ignored. On an ideal scenario, this number should be equal to the number of accounts required by the largest instruction of your program.
