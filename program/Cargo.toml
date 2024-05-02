@@ -1,0 +1,14 @@
+[package]
+name = "nitrate-program"
+description = "Program types for Nitrate entrypoint programs"
+repository = "https://github.com/nifty-oss/nitrate"
+version = "0.0.0"
+edition = "2021"
+license = "Apache-2.0"
+
+[features]
+logging = []
+
+[dependencies]
+rustversion = "1.0"
+solana-program = "^1.16"
