@@ -51,7 +51,7 @@ The main difference from the standard `entrypoint!` macro is that `nitrate` repr
 
 The entrypoint is bundled with a companion [`macro`](https://github.com/nifty-oss/nitrate/macro/README.md) and [`program`](https://github.com/nifty-oss/nitrate/program/README.md) types crates.
 
-> [!TIP]
+> [!IMPORTANT]
 > A program can receive more than the specified maximum number of accounts, but any account exceeding the maximum will be ignored. On an ideal scenario, this number should be equal to the number of accounts required by the largest instruction of your program.
 
 ## License
@@ -70,4 +70,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-This crate is based on [`solana-nostd-entrypoint`](https://github.com/cavemanloverboy/solana-nostd-entrypoint) under the [Apache-2.0 license](https://github.com/nifty-oss/nitrate/blob/main/LICENSE.third-party).
+This crate is based on [`solana-nostd-entrypoint`](https://github.com/cavemanloverboy/solana-nostd-entrypoint).
