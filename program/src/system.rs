@@ -59,7 +59,9 @@ pub fn create_account_signed<const SEEDS: usize>(
     owner: &Pubkey,
     signer_seeds: &[&[u8]; SEEDS],
 ) {
-    let instruction_accounts: [CAccountMeta; 2] = [funder.into(), account.into()];
+    let mut instruction_accounts: [CAccountMeta; 2] = [funder.into(), account.into()];
+    // account being created is always a signer
+    instruction_accounts[1].is_signer = true;
 
     // -   0..4: instruction discriminator
     // -  4..12: lamports
