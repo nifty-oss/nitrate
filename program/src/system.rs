@@ -38,7 +38,7 @@ pub fn create_account(
     space: u64,
     owner: &Pubkey,
 ) {
-    _create_account_signed::<0>(funder, account, lamports, space, owner, &[]);
+    _create_account_signed(funder, account, lamports, space, owner, &[]);
 }
 
 /// Create a new account with a program signed instruction.
@@ -75,7 +75,7 @@ pub fn create_account_signed<const SEEDS: usize>(
         len: SEEDS as u64,
     }];
 
-    _create_account_signed::<SEEDS>(funder, account, lamports, space, owner, &signer);
+    _create_account_signed(funder, account, lamports, space, owner, &signer);
 }
 
 /// Transfer lamports between accounts.
@@ -138,7 +138,7 @@ pub fn transfer(from: &AccountInfo, recipient: &AccountInfo, amount: u64) {
 /// * `space`: Number of bytes of memory to allocate.
 /// * `owner`: Address of program that will own the new account.
 /// * `signer`: Seeds used to sign the instruction.
-fn _create_account_signed<const SEEDS: usize>(
+fn _create_account_signed(
     funder: &AccountInfo,
     account: &AccountInfo,
     lamports: u64,
