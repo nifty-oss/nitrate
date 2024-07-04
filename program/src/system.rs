@@ -38,6 +38,27 @@ pub fn create_account(
     space: u64,
     owner: &Pubkey,
 ) {
+    create_account_signed(funder, account, lamports, space, owner, &[])
+}
+
+/// Create a new account with a program signed instruction.
+///
+/// # Arguments
+///
+/// * `funder`: Funding account.
+/// * `account`: New account.
+/// * `lamports`: Number of lamports to transfer to the new account.
+/// * `space`: Number of bytes of memory to allocate.
+/// * `owner`: Address of program that will own the new account.
+/// * `signer_seeds`: Seeds used to sign the instruction.
+pub fn create_account_signed(
+    funder: &AccountInfo,
+    account: &AccountInfo,
+    lamports: u64,
+    space: u64,
+    owner: &Pubkey,
+    signer_seeds: &[&[u8]],
+) {
     let instruction_accounts: [CAccountMeta; 2] = [funder.into(), account.into()];
 
     // -   0..4: instruction discriminator
@@ -60,7 +81,6 @@ pub fn create_account(
 
     // account infos and seeds
     let account_infos: [CAccountInfo; 2] = [funder.into(), account.into()];
-    let seeds: &[&[&[u8]]] = &[];
 
     #[cfg(target_os = "solana")]
     unsafe {
@@ -68,14 +88,14 @@ pub fn create_account(
             &instruction as *const CInstruction as *const u8,
             account_infos.as_ptr() as *const u8,
             account_infos.len() as u64,
-            seeds.as_ptr() as *const u8,
-            seeds.len() as u64,
+            signer_seeds.as_ptr() as *const u8,
+            signer_seeds.len() as u64,
         );
     }
 
     // keep clippy happy
     #[cfg(not(target_os = "solana"))]
-    core::hint::black_box(&(&instruction, &account_infos, &seeds));
+    core::hint::black_box(&(&instruction, &account_infos, &signer_seeds));
 }
 
 /// Transfer lamports between accounts.
