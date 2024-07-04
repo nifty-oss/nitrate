@@ -18,7 +18,7 @@
 use solana_program::{pubkey::Pubkey, system_program};
 
 use crate::{
-    cpi::{CAccountInfo, CAccountMeta, CInstruction},
+    cpi::{CAccountInfo, CAccountMeta, CInstruction, CSigner, CSignerSeed},
     AccountInfo,
 };
 
@@ -51,13 +51,13 @@ pub fn create_account(
 /// * `space`: Number of bytes of memory to allocate.
 /// * `owner`: Address of program that will own the new account.
 /// * `signer_seeds`: Seeds used to sign the instruction.
-pub fn create_account_signed(
+pub fn create_account_signed<const SEEDS: usize>(
     funder: &AccountInfo,
     account: &AccountInfo,
     lamports: u64,
     space: u64,
     owner: &Pubkey,
-    signer_seeds: &[&[u8]],
+    signer_seeds: &[&[u8]; SEEDS],
 ) {
     let instruction_accounts: [CAccountMeta; 2] = [funder.into(), account.into()];
 
@@ -82,20 +82,36 @@ pub fn create_account_signed(
     // account infos and seeds
     let account_infos: [CAccountInfo; 2] = [funder.into(), account.into()];
 
+    // signer seeds
+    let mut seeds: [std::mem::MaybeUninit<CSignerSeed>; SEEDS] =
+        unsafe { std::mem::MaybeUninit::uninit().assume_init() };
+
+    signer_seeds.iter().enumerate().for_each(|(i, seed)| {
+        seeds[i] = std::mem::MaybeUninit::new(CSignerSeed {
+            seed: seed.as_ptr(),
+            len: seed.len() as u64,
+        })
+    });
+
+    let signer = [CSigner {
+        seeds: seeds.as_ptr() as *const CSignerSeed,
+        len: SEEDS as u64,
+    }];
+
     #[cfg(target_os = "solana")]
     unsafe {
         solana_program::syscalls::sol_invoke_signed_c(
             &instruction as *const CInstruction as *const u8,
             account_infos.as_ptr() as *const u8,
             account_infos.len() as u64,
-            signer_seeds.as_ptr() as *const u8,
-            signer_seeds.len() as u64,
+            signer.as_ptr() as *const u8,
+            signer.len() as u64,
         );
     }
 
     // keep clippy happy
     #[cfg(not(target_os = "solana"))]
-    core::hint::black_box(&(&instruction, &account_infos, &signer_seeds));
+    core::hint::black_box(&(&instruction, &account_infos, &signer));
 }
 
 /// Transfer lamports between accounts.
