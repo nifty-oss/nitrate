@@ -140,3 +140,25 @@ pub struct CInstruction {
     /// Length of the data expected by the program instruction.
     pub data_len: u64,
 }
+
+/// A signer seed as expected by `sol_invoke_signed_c`.
+#[repr(C)]
+#[derive(Debug, PartialEq, Clone)]
+pub struct CSignerSeed {
+    /// Seed bytes.
+    pub seed: *const u8,
+
+    /// Length of the seed bytes.
+    pub len: u64,
+}
+
+/// Signer as expected by `sol_invoke_signed_c`.
+#[repr(C)]
+#[derive(Debug, PartialEq, Clone)]
+pub struct CSigner {
+    /// Seed bytes.
+    pub seeds: *const CSignerSeed,
+
+    /// Number of signers.
+    pub len: u64,
+}
